@@ -1,0 +1,74 @@
+[
+  {
+    "name": "clone_web_visitors_2",
+    "description": "Website Visitors",
+    "definition": {
+      "query": "trait('website_visitors').exists()",
+      "type": "USERS"
+    },
+    "options": {
+      "includeAnonymousUsers": true,
+      "includeHistoricalData": true
+    }
+  },
+  {
+    "name": "clone_web_visitors_1",
+    "description": "Website Visitors",
+    "definition": {
+      "query": "trait('website_visitors').exists()",
+      "type": "USERS"
+    },
+    "options": {
+      "includeAnonymousUsers": true,
+      "includeHistoricalData": true
+    }
+  },
+  {
+    "name": "clone_birthdays_aud",
+    "description": "",
+    "definition": {
+      "query": "entity(recipient_relationship: 'recipients').where(entity(recipient_occasion_relationship: 'occasions').where(property('NEXT_OCCASION').within_next(100 days)).count() >= 1).count() >= 1 AND entity(order_relationship: 'orders').where(entity(cart_products_relationship: 'products').where(property('PRODUCT_CATEGORY').one_of('Automotive', 'Electronics', 'Games')).count() >= 1).count() >= 1",
+      "type": "USERS"
+    },
+    "options": {
+      "includeAnonymousUsers": false,
+      "includeHistoricalData": false
+    }
+  },
+  {
+    "name": "clone_web_visitors",
+    "description": "",
+    "definition": {
+      "query": "trait('website_visitors').exists()",
+      "type": "USERS"
+    },
+    "options": {
+      "includeAnonymousUsers": true,
+      "includeHistoricalData": true
+    }
+  },
+  {
+    "name": "Birthday_Gifts_audience",
+    "description": "Audience of people who have received a birthday present through a customer",
+    "definition": {
+      "query": "entity(recipient_relationship: 'recipients').where(entity(recipient_occasion_relationship: 'occasions').where(property('NEXT_OCCASION').within_next(100 days)).count() >= 1).count() >= 1 AND entity(order_relationship: 'orders').where(entity(cart_products_relationship: 'products').where(property('PRODUCT_CATEGORY').one_of('Automotive', 'Electronics', 'Games')).count() >= 1).count() >= 1",
+      "type": "USERS"
+    },
+    "options": {
+      "includeAnonymousUsers": false,
+      "includeHistoricalData": false
+    }
+  },
+  {
+    "name": "Web Visitors",
+    "description": "",
+    "definition": {
+      "query": "trait('website_visitors').exists()",
+      "type": "USERS"
+    },
+    "options": {
+      "includeAnonymousUsers": true,
+      "includeHistoricalData": true
+    }
+  }
+]
