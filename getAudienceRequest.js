@@ -13,27 +13,43 @@ console.log(bearerToken);
 const apiUrl = `https://api.segmentapis.com/spaces/${sourceSpaceId}/audiences`;
 console.log(apiUrl);
 
-// Function to process and save a filtered JSON response
+// Function to process and save a filtered JSON response with pagination
 async function sendGetRequest() {
     try {
         console.log(chalk.blue('Sending GET request to API...'));
 
-        const response = await axios.get(apiUrl, {
-            headers: {
-                // Authentication method (adjust if needed)
-                'Authorization': `Bearer ${bearerToken}`,
-                'Content-Type': 'application/json',
+        let allAudiences = [];
+        let cursor = null;
+        let page = 1;
+
+        do {
+            // Build URL with pagination parameters
+            let url = `${apiUrl}?pagination.count=100`;
+            if (cursor) {
+                url += `&pagination.cursor=${encodeURIComponent(cursor)}`;
             }
-        });
 
-        // Successful response
-        console.log(chalk.green('GET Response received:'));
+            console.log(chalk.blue(`Fetching page ${page}...`));
+            const response = await axios.get(url, {
+                headers: {
+                    'Authorization': `Bearer ${bearerToken}`,
+                    'Content-Type': 'application/json',
+                }
+            });
 
-        // Extracting audiences from response data
-        const audiences = response.data.data.audiences;
+            // Extract audiences and add to the list
+            const audiences = response.data.data.audiences || [];
+            allAudiences = allAudiences.concat(audiences);
+
+            // Get next cursor if present
+            cursor = response.data.data.pagination?.next || null;
+            page++;
+        } while (cursor);
+
+        console.log(chalk.green(`Fetched ${allAudiences.length} audiences in total.`));
 
         // Process the audiences data to extract only relevant fields
-        const processedData = processJson(audiences);
+        const processedData = processJson(allAudiences);
 
         // Define output directory and file path
         const outputDir = path.join(__dirname, 'output');
@@ -67,6 +83,7 @@ function processJson(audiences) {
     // Loop through the audiences array and extract relevant fields
     return audiences.map(item => ({
         name: item.name,
+        id: item.id,
         description: item.description,
         definition: {
             query: item.definition.query,
